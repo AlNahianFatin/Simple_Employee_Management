@@ -1,10 +1,14 @@
 using Microsoft.EntityFrameworkCore;
+using Simple_Employee_Management.CustomAttributes;
 using Simple_Employee_Management.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<SimpleEmployeeManagementDbContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("SEMDbContext")));
+
+builder.Services.AddAutoMapper(typeof(MappingEmployee));
+builder.Services.AddAutoMapper(typeof(MappingAdmin));
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(opt =>
@@ -29,6 +33,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
+app.UseStaticFiles();
 
 app.UseSession();
 app.UseAuthentication();
