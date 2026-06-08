@@ -13,5 +13,7 @@ namespace Simple_Employee_Management.DTO
         [MinLength(5, ErrorMessage = "Password must be at least 5 characters long.")]
         [MaxLength(100, ErrorMessage = "Password must be at most 100 characters long.")]
         public string Password { get; set; } = null!;
+
+        public bool remember { get; set; } = false;
     }
 }

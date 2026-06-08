@@ -8,6 +8,8 @@ namespace Simple_Employee_Management.Controllers
     {
         public IActionResult Index()
         {
+            if(Request.Cookies["Email"] != null)
+                TempData["Email"] = Request.Cookies["Email"];
             return View();
         }
 

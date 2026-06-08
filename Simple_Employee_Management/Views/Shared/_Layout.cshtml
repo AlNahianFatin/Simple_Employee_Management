@@ -23,14 +23,20 @@
 	                    <li class="nav-item">
 		                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
 	                    </li>
-                        @if (ViewBag.Email == null)
+                        @if (TempData["Email"] == null)
 	                    {
 		                    <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Credential" asp-action="Login">Login</a>
 		                    </li>
 	                    }
-	                    @if (ViewBag.Email != null)
+	                    @if (TempData["Email"] != null)
 	                    {
+		                    <li class="nav-item">
+			                    <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Admins</a>
+		                    </li>
+		                    <li class="nav-item">
+			                    <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="Index">Employees</a>
+		                    </li>
 		                    <li class="nav-item">
 			                    <a class="nav-link" asp-area="" asp-controller="Credential" asp-action="Logout">Logout</a>
 		                    </li>

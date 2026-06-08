@@ -20,7 +20,8 @@ namespace Simple_Employee_Management.Controllers
         {
             var sessionEmail = HttpContext.Session.GetString("Email");
             var cookieEmail = Request.Cookies["Email"];
-            if (cookieEmail != null || sessionEmail != null)
+
+            if (cookieEmail != null && sessionEmail != null)
                 return RedirectToAction("Index", "Home");
 
             var model = new LoginDTO();
@@ -42,22 +43,37 @@ namespace Simple_Employee_Management.Controllers
             }
 
             HttpContext.Session.SetString("Email", dto.Email);
-            var option = new CookieOptions()
+
+            if (dto.remember)
             {
-                Expires = DateTime.Now.AddDays(5),
-                HttpOnly = true
-            };
-            Response.Cookies.Append("Email", dto.Email, option);
+                var rememberOption = new CookieOptions()
+                {
+                    Expires = DateTime.Now.AddDays(5),
+                    HttpOnly = true
+                };
+                Response.Cookies.Append("Email", dto.Email, rememberOption);
+            }
+            else
+            {
+                var option = new CookieOptions()
+                {
+                    HttpOnly = true
+                };
+                Response.Cookies.Append("Email", dto.Email, option);
+            }
 
-            ViewBag.Email = dto.Email;
+            TempData["Email"] = dto.Email;
 
-            return RedirectToAction("Index", "Admin");
+            return RedirectToAction("Index", "Home");
         }
 
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
             Response.Cookies.Delete("Email");
+
+            TempData["Email"] = null;
+
             return Redirect("Login");
         }
 
