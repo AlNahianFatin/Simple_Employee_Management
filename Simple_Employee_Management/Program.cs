@@ -1,4 +1,18 @@
+using Microsoft.EntityFrameworkCore;
+using Simple_Employee_Management.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<SimpleEmployeeManagementDbContext>(opt =>
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("SEMDbContext")));
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(opt =>
+{
+    opt.IdleTimeout = TimeSpan.FromDays(7);
+    opt.Cookie.HttpOnly = true;
+    opt.Cookie.IsEssential = true;
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -15,6 +29,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
+app.UseSession();
+app.UseAuthentication();
 
 app.UseAuthorization();
 
