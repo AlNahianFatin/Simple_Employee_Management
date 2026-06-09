@@ -6,12 +6,12 @@ using Simple_Employee_Management.DTO;
 
 namespace Simple_Employee_Management.Controllers
 {
-    public class EmployeeController : Controller
+    public class AdminController : Controller
     {
         private SimpleEmployeeManagementDbContext _context;
         private IMapper _mapper;
 
-        public EmployeeController(SimpleEmployeeManagementDbContext context, IMapper mapper)
+        public AdminController(SimpleEmployeeManagementDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -22,81 +22,81 @@ namespace Simple_Employee_Management.Controllers
             if (Request.Cookies["Email"] != null)
                 TempData["Email"] = Request.Cookies["Email"];
 
-            var allEmployees = _context.Employees.ToList();
-            var dto = _mapper.Map<List<EmployeeDTO>>(allEmployees);
+            var allAdmins = _context.Admins.ToList();
+            var dto = _mapper.Map<List<AdminDTO>>(allAdmins);
             return View(dto);
         }
 
-        public IActionResult Add(int EmployeeId)
+        public IActionResult Add(int AdminId)
         {
             if (Request.Cookies["Email"] != null)
                 TempData["Email"] = Request.Cookies["Email"];
 
-            return View(new EmployeeDTO());
+            return View(new AdminDTO());
         }
 
         [HttpPost]
-        public IActionResult Add(EmployeeDTO dto)
+        public IActionResult Add(AdminDTO dto)
         {
             if (!ModelState.IsValid)
                 return View(dto);
             try
             {
-                var employee = _mapper.Map<Employee>(dto);
+                var admin = _mapper.Map<Admin>(dto);
 
-                _context.Employees.Add(employee);
-                TempData["Success"] = "Employee added successfully.";
+                _context.Admins.Add(admin);
+                TempData["Success"] = "Admin added successfully.";
 
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                ViewBag.Error = "Error adding employee: " + (ex.Message);
+                ViewBag.Error = "Error adding admin: " + (ex.Message);
                 return View(dto);
             }
         }
 
-        public IActionResult Update(int EmployeeId)
+        public IActionResult Update(int AdminId)
         {
             if (Request.Cookies["Email"] != null)
                 TempData["Email"] = Request.Cookies["Email"];
 
             try
             {
-                var employee = _context.Employees.Find(EmployeeId) ?? new Employee();
-                var dto = _mapper.Map<EmployeeDTO>(employee);
+                var admin = _context.Admins.Find(AdminId) ?? new Admin();
+                var dto = _mapper.Map<AdminDTO>(admin);
                 return View(dto);
             }
             catch (Exception ex)
             {
-                ViewBag.Error = "Something went wrong while fetching the employee: " + ex.Message;
+                ViewBag.Error = "Something went wrong while fetching the admin: " + ex.Message;
                 return RedirectToAction("Index");
             }
         }
 
         [HttpPost]
-        public IActionResult Update(EmployeeDTO dto)
+        public IActionResult Update(AdminDTO dto)
         {
             if (!ModelState.IsValid)
                 return View(dto);
             try
             {
-                var employee = _mapper.Map<Employee>(dto);
+                var admin = _mapper.Map<Admin>(dto);
 
-                var existingEmployee = _context.Employees.Find(employee.EmployeeId);
-                if (existingEmployee != null)
+                var existingAdmin = _context.Admins.Find(admin.AdminId);
+                if (existingAdmin != null)
                 {
-                    existingEmployee.Username = employee.Username;
-                    existingEmployee.Password = employee.Password;
-                    existingEmployee.Email = employee.Email;
+                    existingAdmin.Username = admin.Username;
+                    existingAdmin.Password = admin.Password;
+                    existingAdmin.Email = admin.Email;
 
-                    _context.Employees.Update(existingEmployee);
-                    TempData["Success"] = "Employee updated successfully.";
+                    _context.Admins.Update(existingAdmin);
+                    TempData["Success"] = "Admin updated successfully.";
                 }
                 else
                 {
-                    TempData["Error"] = "Employee not found for update.";
+                    TempData["Error"] = "Admin not found for update.";
                     return View(dto);
                 }
 
@@ -105,28 +105,28 @@ namespace Simple_Employee_Management.Controllers
             }
             catch (Exception ex)
             {
-                ViewBag.Error = "Error saving employee: " + (ex.Message);
+                ViewBag.Error = "Error saving admin: " + (ex.Message);
                 return View(dto);
             }
         }
 
-        //public IActionResult Delete(int EmployeeId)
+        //public IActionResult Delete(int AdminId)
         //{
         //    try
         //    {
-        //        var employee = _context.Employees.Find(EmployeeId);
-        //        if (employee != null)
+        //        var admin = _context.Admins.Find(AdminId);
+        //        if (admin != null)
         //        {
-        //            _context.Employees.Remove(employee);
+        //            _context.Admins.Remove(admin);
         //            _context.SaveChanges();
-        //            TempData["Success"] = $"Employee deleted successfully.";
+        //            TempData["Success"] = $"Admin deleted successfully.";
         //        }
         //        else
-        //            TempData["Error"] = "Employee not found.";
+        //            TempData["Error"] = "Admin not found.";
         //    }
         //    catch (Exception ex)
         //    {
-        //        TempData["Error"] = "Something went wrong while deleting the employee: " + ex.Message;
+        //        TempData["Error"] = "Something went wrong while deleting the admin: " + ex.Message;
         //    }
         //    return RedirectToAction("Index");
         //}

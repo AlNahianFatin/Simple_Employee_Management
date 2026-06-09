@@ -1,0 +1,65 @@
+﻿@model List<AdminDTO>
+@{
+	ViewData["Title"] = "Admins";
+}
+
+@if (ViewBag.Error != null)
+{
+	<div class="alert alert-dismissible alert-danger">
+		<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+		<p>@ViewBag.Error</P>
+	</div>
+}
+
+@if (ViewBag.Success != null)
+{
+	<div class="alert alert-dismissible alert-success">
+		<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+		<p>@ViewBag.Success</P>
+	</div>
+}
+
+@if (TempData["Error"] != null)
+{
+	<div class="alert alert-dismissible alert-danger">
+		<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+		<p>@TempData["Error"]</P>
+	</div>
+}
+
+@if (TempData["Success"] != null)
+{
+	<div class="alert alert-dismissible alert-success">
+		<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+		<p>@TempData["Success"]</P>
+	</div>
+}
+
+<h2>Users</h2>
+
+<table class="table-striped table">
+    <thead>
+        <tr>
+	        <th>Id</th>
+	        <th>Username</th>
+	        <th>Password</th>
+	        <th>Email</th>
+	        <th><a asp-action="Add" class="btn btn-sm btn-success">New Admin</a></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var admin in Model)
+    {
+	    <tr>
+		    <td>@admin.AdminId</td>
+		    <td>@admin.Username</td>
+		    <td>@admin.Password</td>
+		    <td>@admin.Email</td>
+			<td>
+				<a asp-action="Update" asp-route-AdminId="@admin.AdminId" class="btn btn-sm btn-primary">Edit</a>
+				@* <a onclick="return confirm('Are you sure?')" asp-action="Delete" asp-route-AdminId="@admin.AdminId" class="btn btn-sm btn-danger">Delete</a> *@
+			</td>
+	    </tr>
+    }
+    </tbody>
+</table>
