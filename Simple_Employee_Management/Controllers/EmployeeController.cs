@@ -19,6 +19,9 @@ namespace Simple_Employee_Management.Controllers
 
         public IActionResult Index()
         {
+            if (Request.Cookies["Email"] == null && HttpContext.Session.GetString("Email") == null)
+                return RedirectToAction("Denied", "Credential");
+
             if (Request.Cookies["Email"] != null)
                 TempData["Email"] = Request.Cookies["Email"];
 
@@ -27,8 +30,11 @@ namespace Simple_Employee_Management.Controllers
             return View(dto);
         }
 
-        public IActionResult Add(int EmployeeId)
+        public IActionResult Add(int Id)
         {
+            if (Request.Cookies["Email"] == null && HttpContext.Session.GetString("Email") == null)
+                return RedirectToAction("Denied", "Credential");
+
             if (Request.Cookies["Email"] != null)
                 TempData["Email"] = Request.Cookies["Email"];
 
@@ -57,14 +63,17 @@ namespace Simple_Employee_Management.Controllers
             }
         }
 
-        public IActionResult Update(int EmployeeId)
+        public IActionResult Update(int Id)
         {
+            if (Request.Cookies["Email"] == null && HttpContext.Session.GetString("Email") == null)
+                return RedirectToAction("Denied", "Credential");
+
             if (Request.Cookies["Email"] != null)
                 TempData["Email"] = Request.Cookies["Email"];
 
             try
             {
-                var employee = _context.Employees.Find(EmployeeId) ?? new Employee();
+                var employee = _context.Employees.Find(Id) ?? new Employee();
                 var dto = _mapper.Map<EmployeeDTO>(employee);
                 return View(dto);
             }
@@ -84,12 +93,13 @@ namespace Simple_Employee_Management.Controllers
             {
                 var employee = _mapper.Map<Employee>(dto);
 
-                var existingEmployee = _context.Employees.Find(employee.EmployeeId);
+                var existingEmployee = _context.Employees.Find(employee.Id);
                 if (existingEmployee != null)
                 {
-                    existingEmployee.Username = employee.Username;
-                    existingEmployee.Password = employee.Password;
-                    existingEmployee.Email = employee.Email;
+                    existingEmployee.FirstName = employee.FirstName;
+                    existingEmployee.LastName = employee.LastName;
+                    existingEmployee.Position = employee.Position;
+                    existingEmployee.Salary = employee.Salary;
 
                     _context.Employees.Update(existingEmployee);
                     TempData["Success"] = "Employee updated successfully.";
@@ -110,25 +120,25 @@ namespace Simple_Employee_Management.Controllers
             }
         }
 
-        //public IActionResult Delete(int EmployeeId)
-        //{
-        //    try
-        //    {
-        //        var employee = _context.Employees.Find(EmployeeId);
-        //        if (employee != null)
-        //        {
-        //            _context.Employees.Remove(employee);
-        //            _context.SaveChanges();
-        //            TempData["Success"] = $"Employee deleted successfully.";
-        //        }
-        //        else
-        //            TempData["Error"] = "Employee not found.";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        TempData["Error"] = "Something went wrong while deleting the employee: " + ex.Message;
-        //    }
-        //    return RedirectToAction("Index");
-        //}
+        public IActionResult Delete(int Id)
+        {
+            try
+            {
+                var employee = _context.Employees.Find(Id);
+                if (employee != null)
+                {
+                    _context.Employees.Remove(employee);
+                    _context.SaveChanges();
+                    TempData["Success"] = $"Employee {employee.FirstName} {employee.LastName} deleted successfully.";
+                }
+                else
+                    TempData["Error"] = "Employee not found.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Something went wrong while deleting the employee: " + ex.Message;
+            }
+            return RedirectToAction("Index");
+        }
     }
 }

@@ -19,6 +19,9 @@ namespace Simple_Employee_Management.Controllers
 
         public IActionResult Index()
         {
+            if (Request.Cookies["Email"] == null && HttpContext.Session.GetString("Email") == null)
+                return RedirectToAction("Denied", "Credential");
+
             if (Request.Cookies["Email"] != null)
                 TempData["Email"] = Request.Cookies["Email"];
 
@@ -29,6 +32,9 @@ namespace Simple_Employee_Management.Controllers
 
         public IActionResult Add(int AdminId)
         {
+            if (Request.Cookies["Email"] == null && HttpContext.Session.GetString("Email") == null)
+                return RedirectToAction("Denied", "Credential");
+
             if (Request.Cookies["Email"] != null)
                 TempData["Email"] = Request.Cookies["Email"];
 
@@ -59,6 +65,9 @@ namespace Simple_Employee_Management.Controllers
 
         public IActionResult Update(int AdminId)
         {
+            if (Request.Cookies["Email"] == null && HttpContext.Session.GetString("Email") == null)
+                return RedirectToAction("Denied", "Credential");
+
             if (Request.Cookies["Email"] != null)
                 TempData["Email"] = Request.Cookies["Email"];
 
@@ -109,26 +118,5 @@ namespace Simple_Employee_Management.Controllers
                 return View(dto);
             }
         }
-
-        //public IActionResult Delete(int AdminId)
-        //{
-        //    try
-        //    {
-        //        var admin = _context.Admins.Find(AdminId);
-        //        if (admin != null)
-        //        {
-        //            _context.Admins.Remove(admin);
-        //            _context.SaveChanges();
-        //            TempData["Success"] = $"Admin deleted successfully.";
-        //        }
-        //        else
-        //            TempData["Error"] = "Admin not found.";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        TempData["Error"] = "Something went wrong while deleting the admin: " + ex.Message;
-        //    }
-        //    return RedirectToAction("Index");
-        //}
     }
 }

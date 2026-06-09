@@ -10,7 +10,6 @@ namespace Simple_Employee_Management.DTO
         public int AdminId { get; set; }
 
         [Required]
-        [Display(Name = "Username")]
         [MaxLength(100, ErrorMessage = "Username must be at most 100 characters long.")]
         public string Username { get; set; } = null!;
 
